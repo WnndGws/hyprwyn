@@ -38,7 +38,7 @@ DISPLAYS = [
     hypr_dataclasses.Display(
         output="eDP-1",
         mode="1920x1080@60",
-        position="-1920x0",
+        position="0x0",
         scale=1.0,
         disabled=False,
         transform=0,
@@ -46,7 +46,7 @@ DISPLAYS = [
     hypr_dataclasses.Display(
         output="DP-4",
         mode="1920x1080@60",
-        position="0x-1080",
+        position="1920x-1080",
         scale=1.0,
         disabled=False,
         transform=2,  # rotate 180
@@ -54,7 +54,15 @@ DISPLAYS = [
     hypr_dataclasses.Display(
         output="DP-3",
         mode="1920x1080@60",
-        position="0x0",
+        position="1920x0",
+        scale=1.0,
+        disabled=False,
+        transform=0,
+    ),
+    hypr_dataclasses.Display(
+        output="HDMI-A-2",
+        mode="1920x1080@60",
+        position="0x-1080",
         scale=1.0,
         disabled=False,
         transform=0,
@@ -67,6 +75,7 @@ WORKSPACES[0].default = True
 attached_monitors = instance.get_monitors()
 attached_monitors_names = [_m.name for _m in attached_monitors]
 logger.debug(f"Attached monitors: {attached_monitors}")
+logger.debug(f"Attached monitors: {attached_monitors_names}")
 
 
 def set_monitors() -> None:
@@ -92,17 +101,34 @@ def set_monitors() -> None:
                 ws.layout = "dwindle"
 
     elif len(attached_monitors) == 2:
-        for ws in WORKSPACES[:4]:
-            ws.monitor = "eDP-1"
-            if ws.workspace in ["2", "3", "4"]:
-                ws.layout = "dwindle"
+        logger.trace("HERE 1")
+        if "DP-3" in attached_monitors_names:
+            for ws in WORKSPACES[:4]:
+                ws.monitor = "eDP-1"
+                if ws.workspace in ["2", "3", "4"]:
+                    ws.layout = "dwindle"
 
-        for ws in WORKSPACES[5:]:
-            ws.monitor = "DP-3"
-            if ws.workspace == "6":
-                ws.default = True
-            if ws.workspace in ["7", "8", "9"]:
-                ws.layout = "dwindle"
+            for ws in WORKSPACES[5:]:
+                ws.monitor = "DP-3"
+                if ws.workspace == "6":
+                    ws.default = True
+                if ws.workspace in ["7", "8", "9"]:
+                    ws.layout = "dwindle"
+
+        elif "HDMI-A-2" in attached_monitors_names:
+            logger.trace("HERE")
+            for ws in WORKSPACES[:4]:
+                ws.monitor = "eDP-1"
+                if ws.workspace in ["2", "3", "4"]:
+                    ws.layout = "dwindle"
+            for ws in WORKSPACES[6:]:
+                ws.monitor = "eDP-1"
+            for ws in WORKSPACES[3:6]:
+                ws.monitor = "HDMI-A-2"
+                if ws.workspace == "4":
+                    ws.default = True
+                if ws.workspace == "5":
+                    ws.layout = "dwindle"
 
     elif len(attached_monitors) == 1:
         for ws in WORKSPACES:
@@ -130,7 +156,7 @@ def set_monitors() -> None:
     logger.debug(instance.get_workspaces())
 
 
-def set_waybar():
+def set_waybar() -> None:
     logger.debug("Starting waybar")
     with open(os.devnull, "w") as fp:
         subprocess.Popen(
@@ -141,7 +167,7 @@ def set_waybar():
 
 
 # Define a callback function
-def set_monitor_and_waybar(sender, **kwargs):
+def set_monitor_and_waybar(sender, **kwargs) -> None:
     logger.debug("Monitors changed")
     set_monitors()
     set_waybar()
