@@ -84,56 +84,52 @@ def set_monitors() -> None:
         for ws in WORKSPACES[:2]:
             ws.monitor = "eDP-1"
             if ws.workspace in ["2", "3"]:
-                ws.layout = "dwindle"
+                ws.layout = "lua:bigbrother"
 
         for ws in WORKSPACES[3:6]:
             ws.monitor = "DP-3"
             if ws.workspace == "4":
                 ws.default = True
             if ws.workspace in ["5", "6"]:
-                ws.layout = "dwindle"
+                ws.layout = "lua:bigbrother"
 
         for ws in WORKSPACES[6:]:
             ws.monitor = "DP-4"
             if ws.workspace == "10":
                 ws.default = True
             if ws.workspace in ["8", "9"]:
-                ws.layout = "dwindle"
+                ws.layout = "lua:bigbrother"
 
     elif len(attached_monitors) == 2:
         logger.trace("HERE 1")
         if "DP-3" in attached_monitors_names:
             for ws in WORKSPACES[:4]:
                 ws.monitor = "eDP-1"
-                if ws.workspace in ["2", "3", "4"]:
-                    ws.layout = "dwindle"
+                ws.layout = "lua:bigbrother"
 
             for ws in WORKSPACES[5:]:
                 ws.monitor = "DP-3"
                 if ws.workspace == "6":
                     ws.default = True
-                if ws.workspace in ["7", "8", "9"]:
-                    ws.layout = "dwindle"
+                ws.layout = "lua:bigbrother"
 
         elif "HDMI-A-2" in attached_monitors_names:
             logger.trace("HERE")
             for ws in WORKSPACES[:4]:
                 ws.monitor = "eDP-1"
-                if ws.workspace in ["2", "3", "4"]:
-                    ws.layout = "dwindle"
+                ws.layout = "lua:bigbrother"
             for ws in WORKSPACES[6:]:
                 ws.monitor = "eDP-1"
+                ws.layout = "lua:bigbrother"
             for ws in WORKSPACES[3:6]:
                 ws.monitor = "HDMI-A-2"
                 if ws.workspace == "4":
                     ws.default = True
-                if ws.workspace == "5":
-                    ws.layout = "dwindle"
+                ws.layout = "lua:bigbrother"
 
     elif len(attached_monitors) == 1:
         for ws in WORKSPACES:
-            if ws.workspace in ["2", "3", "4", "6", "7", "8"]:
-                ws.layout = "dwindle"
+            ws.layout = "lua:bigbrother"
 
     logger.debug("Setting laptop monitors")
     for display in DISPLAYS:
