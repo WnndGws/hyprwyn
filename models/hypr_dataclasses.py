@@ -8,8 +8,31 @@
 from dataclasses import asdict, dataclass
 
 
+@dataclass(frozen=True)
+class MonitorAssignment:
+    """Hand a slice of the workspace list to one monitor."""
+
+    start: int
+    stop: int | None = None  # None means "to the end"
+    monitor: str | None = None  # None leaves ws.monitor untouched
+    layout: str | None = None
+    layout_for: frozenset[str] = frozenset()  # empty means "every workspace here"
+    default: str | None = None
+
+
+@dataclass(frozen=True)
+class Profile:
+    """One monitor arrangement. `required` names must all be attached."""
+
+    count: int
+    assignments: tuple[MonitorAssignment, ...]
+    required: frozenset[str] = frozenset()
+
+
 @dataclass
 class Display:
+    """Display property values."""
+
     output: str = "eDP-1"
     mode: str = "1920x1080@60"
     position: str = "0x0"
@@ -31,6 +54,8 @@ class Display:
 
 @dataclass
 class Workspace:
+    """Workspace property values."""
+
     workspace: str = "1"
     default: bool = False
     monitor: str = "eDP-1"
